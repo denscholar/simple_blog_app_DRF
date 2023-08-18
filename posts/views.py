@@ -4,50 +4,78 @@ from rest_framework.request import Request
 from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view, APIView
 from .models import Post
+from rest_framework import viewsets
 from .serializers import PostSerializer
 
 
-# Generic APIVIEW
-class PostListCreateView(
-    generics.GenericAPIView,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-):
-    """
-    View for creating and listing post
-    """
+class PostViewset(viewsets.ModelViewSet):
+    # def list(self, request, *args, **kwargs):
+    #     queyset = Post.objects.all()
+    #     serializer = PostSerializer(instance=queyset, many=True)
+    #     return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    # def retrieve(self, request, pk=None):
+    #     post = get_object_or_404(Post, pk=pk)
+    #     serializer = PostSerializer(instance=post)
+    #     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    serializer_class = PostSerializer
+    # this provides all CRUD functionality
     queryset = Post.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class PostRetrieveUpdateDelete(
-    generics.GenericAPIView,
-    mixins.DestroyModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-):
-    """
-    View for retrieving, updating and deleting post
-    """
-
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+# # Generic APIVIEW
+# class PostListCreateView(
+#     generics.GenericAPIView,
+#     mixins.ListModelMixin,
+#     mixins.CreateModelMixin,
+# ):
+#     """
+#     View for creating and listing post
+#     """
+
+#     serializer_class = PostSerializer
+#     queryset = Post.objects.all()
+
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+
+
+# class PostRetrieveUpdateDelete(
+#     generics.GenericAPIView,
+#     mixins.DestroyModelMixin,
+#     mixins.RetrieveModelMixin,
+#     mixins.UpdateModelMixin,
+# ):
+#     """
+#     View for retrieving, updating and deleting post
+#     """
+
+#     serializer_class = PostSerializer
+#     queryset = Post.objects.all()
+
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
 
 # listing and creating a post request
