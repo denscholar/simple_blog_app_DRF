@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
+from rest_framework.authtoken.models import Token
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -25,5 +26,10 @@ class SignUpSerializer(serializers.ModelSerializer):
         passwords = validated_data.pop('password')
         user = super().create(validated_data)
         user.set_password(passwords)
-        user.save()
+        
+        # Saves the user to the database
+        user.save() 
+
+        # This creates a token for this specific user that signs up
+        Token.objects.create(user=user)
         return user

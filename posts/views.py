@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view, APIView
+from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializers import PostSerializer
 
@@ -19,6 +20,7 @@ class PostListCreateView(
 
     serializer_class = PostSerializer
     queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
