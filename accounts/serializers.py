@@ -19,17 +19,30 @@ class SignUpSerializer(serializers.ModelSerializer):
         if email_exist.exists():
             raise serializers.ValidationError({"errors": "Email already exists"})
         return data
-    
+
     """You will need to hash the passowrd and to do that, you will need to overide the create method. The create method is one that will run each time we call the .save method. so we are going to overide that and dictate how we will save the data in the database."""
 
     def create(self, validated_data):
-        passwords = validated_data.pop('password')
+        passwords = validated_data.pop("password")
         user = super().create(validated_data)
         user.set_password(passwords)
-        
+
         # Saves the user to the database
-        user.save() 
+        user.save()
 
         # This creates a token for this specific user that signs up
         Token.objects.create(user=user)
         return user
+
+
+class CurrentUserPostSerializer(serializers.ModelSerializer):
+    posts = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            "id",
+            "username",
+            "email",
+            "posts",
+        )
