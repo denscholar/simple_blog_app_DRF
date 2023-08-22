@@ -5,6 +5,7 @@ from rest_framework import status, generics
 from rest_framework.views import APIView
 from .serializers import SignUpSerializer
 from django.contrib.auth import authenticate
+from .tokens import create_jwt_pair_for_user
 
 
 # signup logic
@@ -22,6 +23,7 @@ class SignupView(generics.GenericAPIView):
 
 
 class LoginView(APIView):
+    
     def post(self, request: Request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -29,10 +31,11 @@ class LoginView(APIView):
         user = authenticate(email=email, password=password)
 
         if user is not None:
-            token = user.auth_token.key
+            tokens = create_jwt_pair_for_user(user)
+            # tokens = user.auth_token.key
             response = {
                 "message": "user logged in successfully",
-                "data": {"token": token},
+                "token": tokens,
             }
             return Response(data=response, status=status.HTTP_200_OK)
         return Response(
