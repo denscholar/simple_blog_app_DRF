@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view, APIView
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 from accounts.serializers import CurrentUserPostSerializer
 from .models import Post
@@ -15,10 +16,14 @@ class PostListCreate(APIView):
     """
     View for creating and listing post
     """
+
     permission_classes = [IsAuthenticated]
-    def get(self, request: Request):
-        user = request.user
-        posts = Post.objects.filter(author=user)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["title"]
+
+    def get(self, request):
+        # user = request.user
+        posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         response = {"message": "all posts", "data": serializer.data}
         return Response(data=response, status=status.HTTP_200_OK)
@@ -74,4 +79,18 @@ class PostCurrentUser(APIView):
         serializer = CurrentUserPostSerializer(instance=user)
 
         response = {"data": serializer.data}
+        return Response(data=response, status=status.HTTP_200_OK)
+
+
+class ListOfPostByUser(APIView):
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["title"]
+
+    def get(self, request, *args, **kwargs):
+        author = request.user
+        posts = Post.objects.filter(author=author)
+        serializer = PostSerializer(instance=posts, many=True)
+
+        response = {"posts": serializer.data}
         return Response(data=response, status=status.HTTP_200_OK)
