@@ -15,14 +15,15 @@ class PostListCreate(APIView):
     """
     View for creating and listing post
     """
-    def get(self, request:Request):
+    permission_classes = [IsAuthenticated]
+    def get(self, request: Request):
         user = request.user
         posts = Post.objects.filter(author=user)
         serializer = PostSerializer(posts, many=True)
         response = {"message": "all posts", "data": serializer.data}
         return Response(data=response, status=status.HTTP_200_OK)
 
-    def post(self, request:Request):
+    def post(self, request: Request):
         user = request.user
         request.data["author"] = user.id  # Associate the user with the post
         serializer = PostSerializer(data=request.data)
@@ -64,11 +65,13 @@ class PostRetrieveUppdateAPIView(APIView):
         }
         return Response(data=response, status=status.HTTP_200_OK)
 
+
 class PostCurrentUser(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         user = request.user
         serializer = CurrentUserPostSerializer(instance=user)
 
-        response = {"message": "all posts", "data": serializer.data}
+        response = {"data": serializer.data}
         return Response(data=response, status=status.HTTP_200_OK)
