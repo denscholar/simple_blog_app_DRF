@@ -11,6 +11,9 @@ urlpatterns = [
     # current user
     path("current_user/", views.PostCurrentUser.as_view(), name="current_user"),
     path("post_detail/<int:id>/", views.PostRetrieveUppdateAPIView.as_view(), name="post_detail"),
+
+    # list posst by user
+    path("user/", views.ListOfPostByUser.as_view(), name="list_of_users"),
     # generic viewset endpoints
     # path("", views.PostListCreateView.as_view(), name="list-create"),
     # path("<int:pk>/", views.PostRetrieveUpdateDelete.as_view(), name="retrieve-update-delete"),
